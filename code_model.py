@@ -7,7 +7,7 @@ from keras.layers import Dense, Dropout
 from keras.optimizers import RMSprop
 
 #自作パッケージ
-from preprocessing import Preprocessing as pp
+from data_manager import DataManager as dm
 
 #各種パラメータ
 
@@ -45,8 +45,10 @@ codeFiles = [
 ]
 
 # クロマベクトルのデータとその教師データを取得する
-pp = pp()
-x_train, y_train, x_test, y_test = pp.get_chromas()
+dm = dm()
+train_range = [1,2,3,4,5,6,7,8,9,10]
+test_range = [1,2,3,4,5,6,7,8,9,10]
+x_train, y_train, x_test, y_test = dm.get_chromas(train_range=train_range, test_range=test_range)
 
 # y(教師データ)にはコードの名前が文字列として入っているが、Kerasで扱いやすい形(0 or 1)に変換する
 y_train = keras.utils.to_categorical(y_train, num_classes)
@@ -76,11 +78,23 @@ score = model.evaluate(x_test, y_test, verbose=0)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
 
-# Plot training & validation loss values
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('Model loss')
-plt.ylabel('Loss')
-plt.xlabel('Epoch')
-plt.legend(['Train', 'Test'], loc='upper left')
+# 結果をプロットする
+fig, (loss_plot, accuracy_plot) = plt.subplots(ncols=2)
+
+accuracy_plot.plot(history.history['accuracy'])
+accuracy_plot.plot(history.history['val_accuracy'])
+accuracy_plot.set_title('Model accuracy')
+accuracy_plot.set_ylabel('Accuracy')
+accuracy_plot.set_xlabel('Epoch')
+accuracy_plot.set_ylim(0, 1.00)
+accuracy_plot.legend(['Train', 'Test'], loc='upper left')
+
+loss_plot.plot(history.history['loss'])
+loss_plot.plot(history.history['val_loss'])
+loss_plot.set_title('Model loss')
+loss_plot.set_ylabel('Loss')
+loss_plot.set_xlabel('Epoch')
+loss_plot.legend(['Train', 'Test'], loc='upper left')
+
+fig.tight_layout()
 plt.show()

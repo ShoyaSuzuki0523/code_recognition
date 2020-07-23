@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import keras
 from keras.datasets import mnist
 from keras.models import Sequential
@@ -50,3 +51,23 @@ history = model.fit(x_train, y_train,
 score = model.evaluate(x_test, y_test, verbose=0)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
+
+#結果をプロットする
+fig, (loss_plot, accuracy_plot) = plt.subplots(ncols=2)
+
+accuracy_plot.plot(history.history['accuracy'])
+accuracy_plot.plot(history.history['val_accuracy'])
+accuracy_plot.set_title('Model accuracy')
+accuracy_plot.set_ylabel('Accuracy')
+accuracy_plot.set_xlabel('Epoch')
+accuracy_plot.legend(['Train', 'Test'], loc='upper left')
+
+loss_plot.plot(history.history['loss'])
+loss_plot.plot(history.history['val_loss'])
+loss_plot.set_title('Model loss')
+loss_plot.set_ylabel('Loss')
+loss_plot.set_xlabel('Epoch')
+loss_plot.legend(['Train', 'Test'], loc='upper left')
+
+fig.tight_layout()
+plt.show()
